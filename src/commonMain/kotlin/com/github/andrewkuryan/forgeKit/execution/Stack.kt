@@ -10,12 +10,14 @@ typealias Stack = List<StackSignal.Frame>
 
 sealed class StackMatchResult {
     data class Success(val frames: List<StackSignal.Read>, val readCount: Int) : StackMatchResult()
-    data class Failure(val index: Int) : StackMatchResult()
+    data class Failure(val signal: StackSignal.Preview, val stack: Stack, val position: Int) : StackMatchResult(),
+        TransitionApplyResult.Failure
 
     companion object {
         fun success(frames: List<StackSignal.Read>, readCount: Int): StackMatchResult = Success(frames, readCount)
         fun success(frame: StackSignal.Read): StackMatchResult = Success(listOf(frame), 1)
-        fun failure(index: Int): StackMatchResult = Failure(index)
+        fun failure(signal: StackSignal.Preview, stack: Stack, position: Int): StackMatchResult =
+            Failure(signal, stack, position)
     }
 }
 
@@ -33,20 +35,19 @@ fun StackSlice.getMatch(stack: Stack, position: Int = 0): StackMatchResult = wit
 
 fun StackSignal.Preview.getMatch(stack: Stack, position: Int): StackMatchResult = with(StackMatchResult) {
     when (val signal = this@getMatch) {
-        is StackSignal.Bottom -> when (stack.getOrNull(position)) {
-            is StackSignal.Bottom -> success(listOf(), 1)
-            else -> failure(position)
-        }
+        is StackSignal.Bottom -> stack.getOrNull(position)
+            ?.takeIfInstance<StackSignal.Bottom>()
+            ?.let { success(listOf(), 1) }
 
-        is StackSignal.Symbol -> when (val frame = stack.getOrNull(position)) {
-            is StackSignal.Symbol -> if (frame == signal) success(frame) else failure(position)
-            else -> failure(position)
-        }
+        is StackSignal.Symbol -> stack.getOrNull(position)
+            ?.takeIfInstance<StackSignal.Symbol>()
+            ?.takeIf { it == signal }
+            ?.let { success(it) }
 
-        is StackSignal.NodeView -> when (val frame = stack.getOrNull(position)) {
-            is StackSignal.Read.Node<*> -> if (frame.name == signal.name) success(frame) else failure(position)
-            else -> failure(position)
-        }
+        is StackSignal.NodeView -> stack.getOrNull(position)
+            ?.takeIfInstance<StackSignal.Read.Node<*>>()
+            ?.takeIf { it.name == signal.name }
+            ?.let { success(it) }
 
         is StackSignal.Marker -> stack.indexOfFrom(signal, position)
             .takeIf { it != -1 }
@@ -56,13 +57,15 @@ fun StackSignal.Preview.getMatch(stack: Stack, position: Int): StackMatchResult 
                         is StackMatchResult.Failure -> result
                         is Success -> when (frame) {
                             is StackSignal.Symbol -> result.concat(frame)
-                            else -> failure(position)
+                            else -> failure(signal, stack, position)
                         }
                     }
                 }
-            } ?: failure(position)
-    }
+            }
+    } ?: failure(this@getMatch, stack, position)
 }
 
 private fun Success.concat(other: Success) = Success(frames + other.frames, readCount + other.readCount)
 private fun Success.concat(frame: StackSignal.Read) = Success(frames + frame, readCount + 1)
+
+private inline fun <reified T> Any.takeIfInstance(): T? = if (this is T) this else null

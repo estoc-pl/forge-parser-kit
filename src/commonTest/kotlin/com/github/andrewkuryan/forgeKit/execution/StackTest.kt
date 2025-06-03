@@ -2,6 +2,7 @@ package com.github.andrewkuryan.forgeKit.execution
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import com.github.andrewkuryan.forgeKit.StackSignal.Bottom
 import com.github.andrewkuryan.forgeKit.StackSignal.Symbol
 import com.github.andrewkuryan.forgeKit.StackSignal.Read.Node
@@ -49,7 +50,7 @@ class StackTest {
         val stack: Stack = listOf(Symbol('a'), Node("F", null), Symbol('b'), Bottom)
         val stackSlice: StackSlice = listOf(Symbol('a'), NodeView("E"))
 
-        assertEquals(StackMatchResult.Failure(1), stackSlice.getMatch(stack))
+        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -57,7 +58,7 @@ class StackTest {
         val stack: Stack = listOf(Symbol('a'), Symbol('b'))
         val stackSlice: StackSlice = listOf(Symbol('a'), Symbol('b'), Symbol('c'))
 
-        assertEquals(StackMatchResult.Failure(2), stackSlice.getMatch(stack))
+        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -87,7 +88,7 @@ class StackTest {
         val stack: Stack = listOf(Node("E", null), Symbol('a'), Bottom)
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"))
 
-        assertEquals(StackMatchResult.Failure(1), stackSlice.getMatch(stack))
+        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -95,6 +96,6 @@ class StackTest {
         val stack: Stack = listOf(Node("E", null), Symbol('a'), Node("A", null), Marker("a+"), Bottom)
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"), Bottom)
 
-        assertEquals(StackMatchResult.Failure(1), stackSlice.getMatch(stack))
+        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
     }
 }

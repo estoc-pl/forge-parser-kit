@@ -5,11 +5,12 @@ import com.github.andrewkuryan.forgeKit.InputSlice
 
 sealed class InputMatchResult {
     data object Success : InputMatchResult()
-    data class Failure(val index: Int) : InputMatchResult()
+    data class Failure(val expected: InputSignal, val received: Char?) : InputMatchResult(),
+        TransitionApplyResult.Failure
 
     companion object {
         fun success(): InputMatchResult = Success
-        fun failure(index: Int): InputMatchResult = Failure(index)
+        fun failure(expected: InputSignal, received: Char?): InputMatchResult = Failure(expected, received)
     }
 }
 
@@ -17,7 +18,9 @@ fun InputSlice.getMatch(input: String): InputMatchResult = with(InputMatchResult
     foldIndexed(success()) { index, result, signal ->
         when (result) {
             is InputMatchResult.Failure -> result
-            is InputMatchResult.Success -> if (signal.matches(input.getSymbolAt(index))) success() else failure(index)
+            is InputMatchResult.Success -> input.getSymbolAt(index).let { symbol ->
+                if (signal.matches(symbol)) success() else failure(signal, symbol)
+            }
         }
     }
 }

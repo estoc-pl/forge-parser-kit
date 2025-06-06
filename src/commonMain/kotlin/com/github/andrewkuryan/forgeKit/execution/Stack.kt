@@ -46,7 +46,7 @@ fun StackSignal.Preview.getMatch(stack: Stack, position: Int): StackMatchResult 
 
         is StackSignal.NodeView -> stack.getOrNull(position)
             ?.takeIfInstance<StackSignal.Read.Node<*>>()
-            ?.takeIf { it.name == signal.name }
+            ?.takeIf { it.view == signal }
             ?.let { success(it) }
 
         is StackSignal.Marker -> stack.indexOfFrom(signal, position)

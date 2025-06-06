@@ -8,7 +8,7 @@ sealed interface StackSignal {
     sealed interface Preview : StackSignal
 
     sealed interface Read : Frame {
-        data class Node<N : SyntaxNode>(val name: String, val value: N?) : Read
+        data class Node<N : SyntaxNode>(val view: NodeView, val value: N?) : Read
     }
 
     sealed interface Push : Frame, Preview

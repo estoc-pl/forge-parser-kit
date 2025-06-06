@@ -38,7 +38,7 @@ fun <N : SyntaxNode> ExecState.applyStackTransition(guard: Guard.Stack<N>, targe
                 is InputMatchResult.Failure -> inputMatch
                 is InputMatchResult.Success -> {
                     val targetNode = StackSignal.Read.Node(
-                        guard.rollupTarget.name,
+                        guard.rollupTarget,
                         guard.semanticAction?.handler?.invoke(stackMatch.frames)
                     )
                     TransitionApplyResult.Success(

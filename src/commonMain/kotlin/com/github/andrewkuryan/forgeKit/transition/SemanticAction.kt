@@ -1,4 +1,4 @@
-package com.github.andrewkuryan.forgeKit
+package com.github.andrewkuryan.forgeKit.transition
 
 import kotlin.reflect.KFunction1
 

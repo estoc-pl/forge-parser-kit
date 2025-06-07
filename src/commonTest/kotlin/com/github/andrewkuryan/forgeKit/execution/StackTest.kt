@@ -3,12 +3,12 @@ package com.github.andrewkuryan.forgeKit.execution
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import com.github.andrewkuryan.forgeKit.StackSignal
-import com.github.andrewkuryan.forgeKit.StackSignal.Bottom
-import com.github.andrewkuryan.forgeKit.StackSignal.Symbol
-import com.github.andrewkuryan.forgeKit.StackSignal.NodeView
-import com.github.andrewkuryan.forgeKit.StackSignal.Marker
-import com.github.andrewkuryan.forgeKit.StackSlice
+import com.github.andrewkuryan.forgeKit.transition.StackSignal
+import com.github.andrewkuryan.forgeKit.transition.StackSignal.Bottom
+import com.github.andrewkuryan.forgeKit.transition.StackSignal.Symbol
+import com.github.andrewkuryan.forgeKit.transition.StackSignal.NodeView
+import com.github.andrewkuryan.forgeKit.transition.StackSignal.Marker
+import com.github.andrewkuryan.forgeKit.transition.StackSlice
 
 class StackTest {
 

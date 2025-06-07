@@ -1,4 +1,4 @@
-package com.github.andrewkuryan.forgeKit
+package com.github.andrewkuryan.forgeKit.transition
 
 value class State(val index: Int)
 

@@ -1,7 +1,7 @@
 package com.github.andrewkuryan.forgeKit.execution
 
-import com.github.andrewkuryan.forgeKit.StackSignal
-import com.github.andrewkuryan.forgeKit.StackSlice
+import com.github.andrewkuryan.forgeKit.transition.StackSignal
+import com.github.andrewkuryan.forgeKit.transition.StackSlice
 import com.github.andrewkuryan.forgeKit.execution.StackMatchResult.Success
 import com.github.andrewkuryan.forgeKit.extensions.foldSubList
 import com.github.andrewkuryan.forgeKit.extensions.indexOfFrom

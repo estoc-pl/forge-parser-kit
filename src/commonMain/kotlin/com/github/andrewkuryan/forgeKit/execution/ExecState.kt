@@ -1,6 +1,9 @@
 package com.github.andrewkuryan.forgeKit.execution
 
-import com.github.andrewkuryan.forgeKit.*
+import com.github.andrewkuryan.forgeKit.transition.Guard
+import com.github.andrewkuryan.forgeKit.transition.StackSignal
+import com.github.andrewkuryan.forgeKit.transition.State
+import com.github.andrewkuryan.forgeKit.transition.SyntaxNode
 
 data class ExecState(val state: State, val input: String, val stack: Stack)
 
@@ -8,6 +11,12 @@ sealed interface TransitionApplyResult {
     data class Success(val nextState: ExecState) : TransitionApplyResult
     sealed interface Failure : TransitionApplyResult
 }
+
+fun <N : SyntaxNode> ExecState.applyTransition(guard: Guard.Meaningful<N>, target: State): TransitionApplyResult =
+    when (guard) {
+        is Guard.Input -> applyInputTransition(guard, target)
+        is Guard.Stack -> applyStackTransition(guard, target)
+    }
 
 fun <N : SyntaxNode> ExecState.applyInputTransition(guard: Guard.Input<N>, target: State): TransitionApplyResult =
     when (val inputMatch = (guard.input + guard.inputPreview).getMatch(input)) {

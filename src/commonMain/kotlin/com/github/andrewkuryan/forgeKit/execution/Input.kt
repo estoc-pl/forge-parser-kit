@@ -1,7 +1,7 @@
 package com.github.andrewkuryan.forgeKit.execution
 
-import com.github.andrewkuryan.forgeKit.InputSignal
-import com.github.andrewkuryan.forgeKit.InputSlice
+import com.github.andrewkuryan.forgeKit.transition.InputSignal
+import com.github.andrewkuryan.forgeKit.transition.InputSlice
 
 sealed class InputMatchResult {
     data object Success : InputMatchResult()

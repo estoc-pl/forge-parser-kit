@@ -50,6 +50,8 @@ sealed class Guard {
         override val stackPushAfter: StackPush = emptyList(),
     ) : Meaningful<N>() {
 
+        val combinedInput = input + inputPreview
+
         override val inputSize = input.size + inputPreview.size
         override val stackSize = stackPreview.size
     }

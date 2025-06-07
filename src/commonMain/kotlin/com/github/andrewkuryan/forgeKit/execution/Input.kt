@@ -4,22 +4,23 @@ import com.github.andrewkuryan.forgeKit.transition.InputSignal
 import com.github.andrewkuryan.forgeKit.transition.InputSlice
 
 sealed class InputMatchResult {
-    data object Success : InputMatchResult()
+    data class Success(val symbols: List<Char>) : InputMatchResult()
     data class Failure(val expected: InputSignal, val received: Char?) : InputMatchResult(),
         TransitionApplyResult.Failure
 
     companion object {
-        fun success(): InputMatchResult = Success
+        fun success(symbols: List<Char>): InputMatchResult = Success(symbols)
         fun failure(expected: InputSignal, received: Char?): InputMatchResult = Failure(expected, received)
     }
 }
 
 fun InputSlice.getMatch(input: String): InputMatchResult = with(InputMatchResult) {
-    foldIndexed(success()) { index, result, signal ->
+    foldIndexed(success(listOf())) { index, result, signal ->
         when (result) {
             is InputMatchResult.Failure -> result
             is InputMatchResult.Success -> input.getSymbolAt(index).let { symbol ->
-                if (signal.matches(symbol)) success() else failure(signal, symbol)
+                if (signal.matches(symbol)) symbol?.let { result.concat(it) } ?: result
+                else failure(signal, symbol)
             }
         }
     }
@@ -37,3 +38,5 @@ fun InputSignal.Unitary.matches(symbol: Char?) = when (this) {
 }
 
 private fun String.getSymbolAt(index: Int) = if (index == length) null else this[index]
+
+private fun InputMatchResult.Success.concat(symbol: Char) = InputMatchResult.Success(symbols + symbol)

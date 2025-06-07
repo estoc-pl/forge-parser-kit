@@ -1,9 +1,6 @@
 package com.github.andrewkuryan.forgeKit.execution
 
-import com.github.andrewkuryan.forgeKit.transition.Guard
-import com.github.andrewkuryan.forgeKit.transition.StackSignal
-import com.github.andrewkuryan.forgeKit.transition.State
-import com.github.andrewkuryan.forgeKit.transition.SyntaxNode
+import com.github.andrewkuryan.forgeKit.transition.*
 
 data class ExecState(val state: State, val input: String, val stack: Stack)
 
@@ -19,20 +16,13 @@ fun <N : SyntaxNode> ExecState.applyTransition(guard: Guard.Meaningful<N>, targe
     }
 
 fun <N : SyntaxNode> ExecState.applyInputTransition(guard: Guard.Input<N>, target: State): TransitionApplyResult =
-    when (val inputMatch = (guard.input + guard.inputPreview).getMatch(input)) {
+    when (val inputMatch = guard.combinedInput.getMatch(input)) {
         is InputMatchResult.Failure -> inputMatch
         is InputMatchResult.Success -> when (val stackMatch = guard.stackPreview.getMatch(stack)) {
             is StackMatchResult.Failure -> stackMatch
-            is StackMatchResult.Success -> {
-                val readSignals = input.take(guard.input.size).map { StackSignal.Symbol(it) }
-                TransitionApplyResult.Success(
-                    ExecState(
-                        target,
-                        input.drop(guard.input.size),
-                        guard.stackPushAfter + readSignals + guard.stackPushBefore + stack
-                    )
-                )
-            }
+            is StackMatchResult.Success -> TransitionApplyResult.Success(
+                ExecState(target, input.drop(inputMatch.symbols.size), stack.applyInputGuard(guard, inputMatch))
+            )
         }
     }
 
@@ -45,19 +35,22 @@ fun <N : SyntaxNode> ExecState.applyStackTransition(guard: Guard.Stack<N>, targe
             is StackMatchResult.Failure -> previewMatch
             is StackMatchResult.Success -> when (val inputMatch = guard.inputPreview.getMatch(input)) {
                 is InputMatchResult.Failure -> inputMatch
-                is InputMatchResult.Success -> {
-                    val targetNode = StackSignal.Read.Node(
-                        guard.rollupTarget,
-                        guard.semanticAction?.handler?.invoke(stackMatch.frames)
-                    )
-                    TransitionApplyResult.Success(
-                        ExecState(
-                            target,
-                            input,
-                            guard.stackPushAfter + targetNode + guard.stackPushBefore + stack.drop(stackMatch.readCount)
-                        )
-                    )
-                }
+                is InputMatchResult.Success -> TransitionApplyResult.Success(
+                    ExecState(target, input, stack.applyStackGuard(guard, stackMatch))
+                )
             }
         }
     }
+
+private fun <N : SyntaxNode> Stack.applyStackGuard(guard: Guard.Stack<N>, stackMatch: StackMatchResult.Success): Stack {
+    val targetNode = StackSignal.Read.Node(
+        guard.rollupTarget,
+        guard.semanticAction?.handler?.invoke(stackMatch.frames)
+    )
+    return guard.stackPushAfter + targetNode + guard.stackPushBefore + this.drop(stackMatch.readCount)
+}
+
+private fun <N : SyntaxNode> Stack.applyInputGuard(guard: Guard.Input<N>, inputMatch: InputMatchResult.Success): Stack {
+    val readSignals = inputMatch.symbols.map { StackSignal.Symbol(it) }
+    return guard.stackPushAfter + readSignals + guard.stackPushBefore + this
+}

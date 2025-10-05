@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
-
 plugins {
     kotlin("multiplatform")
 }
@@ -8,7 +5,7 @@ plugins {
 val kotlinVersion: String by properties
 
 kotlin {
-    linuxX64()
+    jvm()
 
     val hostOs = System.getProperty("os.name")
     val arch = System.getProperty("os.arch")
@@ -21,12 +18,12 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(project(":BNF"))
-        }
-
         commonTest.dependencies {
             implementation("org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion")
+        }
+
+        jvmTest.dependencies {
+            implementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.github.andrewkuryan.forgeKit.transition
 
-value class State(val index: Int)
+import kotlin.jvm.JvmInline
+
+@JvmInline value class State(val index: Int)
 
 abstract class Transition<N : SyntaxNode> {
 

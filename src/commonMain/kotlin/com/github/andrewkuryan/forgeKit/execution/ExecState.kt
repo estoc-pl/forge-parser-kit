@@ -9,13 +9,13 @@ sealed interface TransitionApplyResult {
     sealed interface Failure : TransitionApplyResult
 }
 
-fun <N : SyntaxNode> ExecState.applyTransition(guard: Guard.Meaningful<N>, target: State): TransitionApplyResult =
+fun <N : Any> ExecState.applyTransition(guard: Guard.Meaningful<N>, target: State): TransitionApplyResult =
     when (guard) {
         is Guard.Input -> applyInputTransition(guard, target)
         is Guard.Stack -> applyStackTransition(guard, target)
     }
 
-fun <N : SyntaxNode> ExecState.applyInputTransition(guard: Guard.Input<N>, target: State): TransitionApplyResult =
+fun <N : Any> ExecState.applyInputTransition(guard: Guard.Input<N>, target: State): TransitionApplyResult =
     when (val inputMatch = guard.combinedInput.getMatch(input)) {
         is InputMatchResult.Failure -> inputMatch
         is InputMatchResult.Success -> when (val stackMatch = guard.stackPreview.getMatch(stack)) {
@@ -26,7 +26,7 @@ fun <N : SyntaxNode> ExecState.applyInputTransition(guard: Guard.Input<N>, targe
         }
     }
 
-fun <N : SyntaxNode> ExecState.applyStackTransition(guard: Guard.Stack<N>, target: State): TransitionApplyResult =
+fun <N : Any> ExecState.applyStackTransition(guard: Guard.Stack<N>, target: State): TransitionApplyResult =
     when (val stackMatch = guard.stack.getMatch(stack)) {
         is StackMatchResult.Failure -> stackMatch
         is StackMatchResult.Success -> when (
@@ -42,15 +42,17 @@ fun <N : SyntaxNode> ExecState.applyStackTransition(guard: Guard.Stack<N>, targe
         }
     }
 
-private fun <N : SyntaxNode> Stack.applyStackGuard(guard: Guard.Stack<N>, stackMatch: StackMatchResult.Success): Stack {
+private fun <N : Any> Stack.applyStackGuard(guard: Guard.Stack<N>, stackMatch: StackMatchResult.Success): Stack {
     val targetNode = StackSignal.Read.Node(
         guard.rollupTarget,
-        guard.semanticAction?.handler?.invoke(stackMatch.frames)
+        guard.semanticAction?.handler?.invoke(
+            stackMatch.frames.filterIsInstance<StackSignal.Read.Node<N>>().map { it.value }
+        )
     )
     return guard.stackPushAfter + targetNode + guard.stackPushBefore + this.drop(stackMatch.readCount)
 }
 
-private fun <N : SyntaxNode> Stack.applyInputGuard(guard: Guard.Input<N>, inputMatch: InputMatchResult.Success): Stack {
+private fun <N : Any> Stack.applyInputGuard(guard: Guard.Input<N>, inputMatch: InputMatchResult.Success): Stack {
     val readSignals = inputMatch.symbols.map { StackSignal.Symbol(it) }
     return guard.stackPushAfter + readSignals + guard.stackPushBefore + this
 }

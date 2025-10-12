@@ -1,4 +1,4 @@
-package com.github.andrewkuryan.forgeKit.transition
+package com.github.andrewkuryan.forge.parserKit.transition
 
 object EmptyNode
 

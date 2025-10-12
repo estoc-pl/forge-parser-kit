@@ -1,4 +1,4 @@
-package com.github.andrewkuryan.forgeKit.transition
+package com.github.andrewkuryan.forge.parserKit.transition
 
 typealias StackSlice = List<StackSignal.Preview>
 typealias StackPush = List<StackSignal.Push>

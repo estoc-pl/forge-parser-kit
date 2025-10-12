@@ -1,9 +1,9 @@
-package com.github.andrewkuryan.forgeKit.execution
+package com.github.andrewkuryan.forge.parserKit.execution
 
-import com.github.andrewkuryan.forgeKit.transition.StackSignal
-import com.github.andrewkuryan.forgeKit.transition.StackSlice
-import com.github.andrewkuryan.forgeKit.extensions.foldSubList
-import com.github.andrewkuryan.forgeKit.extensions.indexOfFrom
+import com.github.andrewkuryan.forge.parserKit.transition.StackSignal
+import com.github.andrewkuryan.forge.parserKit.transition.StackSlice
+import com.github.andrewkuryan.forge.parserKit.extensions.foldSubList
+import com.github.andrewkuryan.forge.parserKit.extensions.indexOfFrom
 
 typealias Stack = List<StackSignal.Frame>
 

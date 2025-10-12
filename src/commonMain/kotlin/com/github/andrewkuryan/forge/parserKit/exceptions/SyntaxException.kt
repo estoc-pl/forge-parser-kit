@@ -1,7 +1,7 @@
-package com.github.andrewkuryan.forgeKit.exceptions
+package com.github.andrewkuryan.forge.parserKit.exceptions
 
-import com.github.andrewkuryan.forgeKit.execution.InputMatchResult
-import com.github.andrewkuryan.forgeKit.transition.InputSignal
+import com.github.andrewkuryan.forge.parserKit.execution.InputMatchResult
+import com.github.andrewkuryan.forge.parserKit.transition.InputSignal
 
 class SyntaxException(val failures: List<InputMatchResult.Failure>, val position: Int) : Exception() {
 

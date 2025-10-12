@@ -1,6 +1,6 @@
-package com.github.andrewkuryan.forgeKit.execution
+package com.github.andrewkuryan.forge.parserKit.execution
 
-import com.github.andrewkuryan.forgeKit.transition.*
+import com.github.andrewkuryan.forge.parserKit.transition.*
 
 data class ExecState(val state: State, val input: String, val stack: Stack)
 

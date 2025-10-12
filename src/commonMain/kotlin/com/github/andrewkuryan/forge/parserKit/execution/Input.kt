@@ -1,7 +1,7 @@
-package com.github.andrewkuryan.forgeKit.execution
+package com.github.andrewkuryan.forge.parserKit.execution
 
-import com.github.andrewkuryan.forgeKit.transition.InputSignal
-import com.github.andrewkuryan.forgeKit.transition.InputSlice
+import com.github.andrewkuryan.forge.parserKit.transition.InputSignal
+import com.github.andrewkuryan.forge.parserKit.transition.InputSlice
 
 sealed class InputMatchResult {
     data class Success(val symbols: List<Char>) : InputMatchResult()

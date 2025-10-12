@@ -1,4 +1,4 @@
-package com.github.andrewkuryan.forgeKit.extensions
+package com.github.andrewkuryan.forge.parserKit.extensions
 
 fun <T> List<T>.indexOfFrom(element: T, fromIndex: Int): Int {
     for (i in maxOf(fromIndex, 0) until size) {

@@ -2,7 +2,8 @@ package com.github.andrewkuryan.forge.parserKit.transition
 
 import kotlin.jvm.JvmInline
 
-@JvmInline value class State(val index: Int)
+@JvmInline
+value class State(val index: Int)
 
 abstract class Transition<N : Any> {
 
@@ -13,7 +14,7 @@ abstract class Transition<N : Any> {
     val isLoop: Boolean get() = source == target
 }
 
-data class EmptyTransition<N: Any>(
+data class EmptyTransition<N : Any>(
     override val source: State,
     override val target: State,
 ) : Transition<N>() {
@@ -61,7 +62,7 @@ sealed class Guard {
     data class Stack<N : Any>(
         val rollupTarget: StackSignal.NodeView,
         val stack: StackSlice = emptyList(),
-        val semanticAction: SemanticAction<N>? = null,
+        val semanticAction: SemanticAction<N, *>? = null,
         override val inputPreview: InputSlice = emptyList(),
         override val stackPreview: StackSlice = emptyList(),
         override val stackPushBefore: StackPush = emptyList(),

@@ -45,7 +45,7 @@ fun <N : Any> ExecState.applyStackTransition(guard: Guard.Stack<N>, target: Stat
 private fun <N : Any> Stack.applyStackGuard(guard: Guard.Stack<N>, stackMatch: StackMatchResult.Success): Stack {
     val targetNode = StackSignal.Read.Node(
         guard.rollupTarget,
-        if (guard.semanticAction is SemanticAction.Live<N>) guard.semanticAction.value(
+        if (guard.semanticAction is SemanticAction.Value<N, *>) guard.semanticAction.handler(
             stackMatch.frames.filterIsInstance<StackSignal.Read.Node<N>>().map { it.value }
         ) else null
     )

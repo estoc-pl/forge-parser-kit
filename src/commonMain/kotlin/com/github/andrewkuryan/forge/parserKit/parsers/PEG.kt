@@ -4,8 +4,12 @@ import com.github.andrewkuryan.forge.parserKit.transition.Guard
 import com.github.andrewkuryan.forge.parserKit.transition.SemanticContainer
 import com.github.andrewkuryan.forge.parserKit.transition.State
 
-data class PEGTable<N : Any, SC : SemanticContainer<N>>(
+typealias PEGTableRow<N> = List<Pair<Guard.Meaningful<N>, State>>
+typealias PEGTable<N> = Map<State, PEGTableRow<N>>
+
+data class PEGConfig<N : Any, SC : SemanticContainer<N>>(
     val initialState: State,
     val finalStates: Set<State>,
-    val table: (container: SC) -> Map<State, List<Pair<Guard.Meaningful<N>, State>>>,
+    val getTable: (container: SC) -> PEGTable<N>,
 )
+

@@ -18,7 +18,7 @@ class StackTest {
         val stackSlice: StackSlice = listOf(Symbol('a'))
 
         assertEquals(
-            StackMatchResult.Success(listOf(Symbol('a')), 1),
+            StackMatch.Success(listOf(Symbol('a')), 1),
             stackSlice.getMatch(stack)
         )
     }
@@ -29,7 +29,7 @@ class StackTest {
         val stackSlice: StackSlice = listOf(Symbol('a'), NodeView("E"), Symbol('b'))
 
         assertEquals(
-            StackMatchResult.Success(listOf(Symbol('a'), Node("E"), Symbol('b')), 3),
+            StackMatch.Success(listOf(Symbol('a'), Node("E"), Symbol('b')), 3),
             stackSlice.getMatch(stack)
         )
     }
@@ -40,7 +40,7 @@ class StackTest {
         val stackSlice: StackSlice = listOf(Symbol('k'), NodeView("F"), Bottom)
 
         assertEquals(
-            StackMatchResult.Success(listOf(Symbol('k'), Node("F")), 3),
+            StackMatch.Success(listOf(Symbol('k'), Node("F")), 3),
             stackSlice.getMatch(stack)
         )
     }
@@ -50,7 +50,7 @@ class StackTest {
         val stack: Stack = listOf(Symbol('a'), Node("F"), Symbol('b'), Bottom)
         val stackSlice: StackSlice = listOf(Symbol('a'), NodeView("E"))
 
-        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
+        assertIs<StackMatch.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -58,7 +58,7 @@ class StackTest {
         val stack: Stack = listOf(Symbol('a'), Symbol('b'))
         val stackSlice: StackSlice = listOf(Symbol('a'), Symbol('b'), Symbol('c'))
 
-        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
+        assertIs<StackMatch.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -67,7 +67,7 @@ class StackTest {
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"))
 
         assertEquals(
-            StackMatchResult.Success(listOf(Node("E"), Symbol('a'), Symbol('a'), Symbol('a')), 5),
+            StackMatch.Success(listOf(Node("E"), Symbol('a'), Symbol('a'), Symbol('a')), 5),
             stackSlice.getMatch(stack)
         )
     }
@@ -78,7 +78,7 @@ class StackTest {
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"), Symbol('b'))
 
         assertEquals(
-            StackMatchResult.Success(listOf(Node("E"), Symbol('a'), Symbol('b')), 4),
+            StackMatch.Success(listOf(Node("E"), Symbol('a'), Symbol('b')), 4),
             stackSlice.getMatch(stack)
         )
     }
@@ -88,7 +88,7 @@ class StackTest {
         val stack: Stack = listOf(Node("E"), Symbol('a'), Bottom)
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"))
 
-        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
+        assertIs<StackMatch.Failure>(stackSlice.getMatch(stack))
     }
 
     @Test
@@ -96,7 +96,7 @@ class StackTest {
         val stack: Stack = listOf(Node("E"), Symbol('a'), Node("A"), Marker("a+"), Bottom)
         val stackSlice: StackSlice = listOf(NodeView("E"), Marker("a+"), Bottom)
 
-        assertIs<StackMatchResult.Failure>(stackSlice.getMatch(stack))
+        assertIs<StackMatch.Failure>(stackSlice.getMatch(stack))
     }
 
     @Suppress("TestFunctionName")

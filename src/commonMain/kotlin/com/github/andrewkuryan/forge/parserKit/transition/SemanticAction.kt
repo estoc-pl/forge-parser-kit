@@ -26,6 +26,10 @@ sealed class SemanticAction<N : Any, SC : SemanticContainer<N>> {
 
 open class SemanticContainer<N : Any> {
 
+    companion object {
+        val EMPTY = object : SemanticContainer<EmptyNode>() {}
+    }
+
     protected fun semanticAction(handler: SemanticHandler<N>) = SemanticActionCreator(handler)
 }
 

@@ -1,6 +1,6 @@
 package com.github.andrewkuryan.forge.parserKit.exceptions
 
-import com.github.andrewkuryan.forge.parserKit.execution.ExecState
+import com.github.andrewkuryan.forge.parserKit.execution.Situation
 
-class InternalException(val execState: ExecState, val position: Int) :
-    Exception("[Internal Error]: Something went wrong on position $position")
+class InternalException(situation: Situation, position: Int) :
+    Exception("[Internal Error]: Something went wrong on position $position with situation: $situation")
